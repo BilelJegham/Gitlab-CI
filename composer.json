@@ -1,0 +1,10 @@
+{
+    "name": "root/gitlab-ci",
+    "authors": [
+        {
+            "name": "BilelJegham",
+            "email": "bilel@jegham.com"
+        }
+    ],
+    "require": {}
+}
