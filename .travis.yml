@@ -12,5 +12,6 @@ before_script:
 - composer install --no-progress
 script:
 - phpunit
+
 after_success:
 - vendor/bin/couscous travis-auto-deploy
