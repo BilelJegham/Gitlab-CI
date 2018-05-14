@@ -30,13 +30,13 @@ menu:
     items:
         C :
             text: C
-            relativeUrl: docs/c.html
+            relativeUrl: c.html
         CodeIgniter:
             text: CodeIgniter
-            relativeUrl: docs/codeigniter.html
+            relativeUrl: codeigniter.html
         python:
             text: Python
-            relativeUrl: docs/python.html
+            relativeUrl: python.html
 
 # Base URL of the published website (no "/" at the end!)
 # You are advised to set and use this variable to write your links in the HTML layouts
