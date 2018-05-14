@@ -28,6 +28,9 @@ subtitle: VV
 
 menu:
     items:
+        Introduction :
+            text: Introduction
+            relativeUrl: index.html
         C :
             text: C
             relativeUrl: c.html
