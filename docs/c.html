@@ -53,13 +53,59 @@
 
                 
                 <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
-                    <h1 id="gitlab-ci">Gitlab-CI</h1>
+                    <h1 id="gitlab-ci-pour-c">Gitlab-CI pour C</h1>
 <blockquote>
-<p>Bilel Jegham
-bilel.jegham.com</p>
+<p>MakeFile, gcc</p>
 </blockquote>
-<h1 id="introduction">Introduction</h1>
-<p>Ce repo propose différents fichier gitlab-ci que j'ai utilisé dans mes différents projets.</p>
+<p>Utilisation de Makefile pour compiler et lancer un projet en C.<br />
+3 phases(stages) sont lancés par la CI :</p>
+<ol>
+<li>build</li>
+<li>test</li>
+<li>run</li>
+</ol>
+<h2 id="les-fichiers">Les fichiers</h2>
+<!-- TOC depthFrom:3 orderedList:true -->
+<ol>
+<li><a href="#makefile">Makefile</a></li>
+<li><a href="#gitlab-ciyml">.gitlab-ci.yml</a></li>
+</ol>
+<!-- /TOC -->
+<h3 id="makefile">Makefile</h3>
+<pre><code class="language-makefile">run: compile
+    ./run
+compile: 
+    gcc **.c -ldl -o run
+test:
+    cppcheck .
+install:
+    apt-get -qq update &amp;&amp; apt-get -qq install -y cppcheck
+</code></pre>
+<h3 id="gitlab-ciyml">.gitlab-ci.yml</h3>
+<pre><code class="language-yml">image: gcc
+
+stages:
+  - build
+  - test
+  - run
+
+compile:
+  stage: build
+  script:
+    - make compile
+
+run:
+  stage: run
+  script:
+   - make run
+
+test: 
+  stage: test
+  before_script:
+    - make install
+  script:
+    - make test
+</code></pre>
                 </section>
 
             </div>

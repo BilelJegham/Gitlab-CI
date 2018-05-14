@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>GitLab Doc</title>
+
+        <link rel="stylesheet" href="https://bileljegham.github.io/Gitlab-CI/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://bileljegham.github.io/Gitlab-CI/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://bileljegham.github.io/Gitlab-CI/css/highlight.dark.css">
+        <link rel="stylesheet" href="https://bileljegham.github.io/Gitlab-CI/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="https://bileljegham.github.io/Gitlab-CI/">
+                GitLab Doc
+                <small class="hidden-xs hidden-sm">
+                    This is the default subtitle!
+                </small>
+            </a>
+
+            
+        </header>
+
+        <main class="container-fluid">
+            <div class="row">
+
+                
+                    <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+
+                        <ul class="nav nav-pills nav-stacked">
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/docs/c.html">
+                                        C
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/docs/codeigniter.html">
+                                        CodeIgniter
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/docs/python.html">
+                                        Python
+                                    </a>
+                                </li>
+                                                    </ul>
+
+                    </nav>
+
+                
+                <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
+                    <h1 id="gitlab-ci-pour-codeigniter">Gitlab-CI pour CodeIgniter</h1>
+<blockquote>
+<p>CodeIgniter, Heroku, PHP</p>
+</blockquote>
+<p>Déploiement du projet sur Heroku. 2 espaces ont été créer sur heroku un pour la branche <code>master</code> un autre pour <code>dev</code>. Note la procédure est assez longue d'une part il faut gérer les clés API de heroku, pour gérer la BD heroku. </p>
+<p>2 liens utiles : </p>
+<ul>
+<li><a href="https://docs.gitlab.com/ee/ci/examples/test-and-deploy-ruby-application-to-heroku.html">https://docs.gitlab.com/ee/ci/examples/test-and-deploy-ruby-application-to-heroku.html</a></li>
+<li><a href="https://www.youtube.com/watch?v=mBCH9OTVaGw">https://www.youtube.com/watch?v=mBCH9OTVaGw</a></li>
+</ul>
+<p>3 phases (stages) sont lancés par la CI :</p>
+<ol>
+<li>deploy</li>
+</ol>
+<h2 id="les-fichiers">Les fichiers</h2>
+<!-- TOC depthFrom:3 orderedList:true -->
+<ol>
+<li><a href="#gitlab-ciyml">.gitlab-ci.yml</a></li>
+<li><a href="#mysql">mysql</a></li>
+</ol>
+<!-- /TOC -->
+<h3 id="gitlab-ciyml">.gitlab-ci.yml</h3>
+<pre><code class="language-yml">stages:
+  - deploy
+
+before_script:
+  - cp ./GitlabCI/config.php ./application/config/config.php
+  - cp ./GitlabCI/config.php ./application/config/database.php
+
+deploy-dev:
+  stage: deploy
+  script:
+  - gem install dpl
+  - dpl --provider=heroku --app=idesys-egc-dev --api-key=$HEROKU_STAGING_API_KEY
+  only:
+  - dev
+
+deloy-master:
+  stage: deploy
+  script:
+  - gem install dpl
+  - dpl --provider=heroku --app=idesys-egc --api-key=$HEROKU_STAGING_API_KEY
+  only:
+  - master
+</code></pre>
+<h3 id="mysql">mysql</h3>
+<pre><code class="language-yml">
+stages:
+  - build
+  - backup
+
+variables:
+  MYSQL_DATABASE: &lt;heroku&gt;
+  MYSQL_HOST: &lt;clear-db.net&gt;
+  MYSQL_PORT: &lt;3306&gt;
+  MYSQL_USERNAME: &lt;username&gt;
+  MYSQL_PASSWORD: &lt;password&gt;
+
+SQL:
+  stage : build
+  before_script:
+    - apt-get -qq update &amp;&amp; apt-get install -qq -y mysql-client #image mysql cmd mysqldump ne marche pas
+  script:
+   - mkdir sql/tmp
+   - mysqldump --host=$MYSQL_HOST --port=$MYSQL_PORT --user=$MYSQL_USERNAME --password="$MYSQL_PASSWORD" $MYSQL_DATABASE &gt; sql/tmp/dumpBefore.sql
+   - mysqldump --no-create-info --complete-insert --host=$MYSQL_HOST --port=$MYSQL_PORT --user=$MYSQL_USERNAME --password="$MYSQL_PASSWORD" $MYSQL_DATABASE &gt; sql/tmp/dataOnly.sql   
+   - cat sql/*.sql &gt; sql/tmp/newSchema.sql
+   - mysql --host=$MYSQL_HOST --port=$MYSQL_PORT --user=$MYSQL_USERNAME --password="$MYSQL_PASSWORD" $MYSQL_DATABASE &lt; sql/tmp/newSchema.sql
+   - mysql --host=$MYSQL_HOST --port=$MYSQL_PORT --user=$MYSQL_USERNAME --password="$MYSQL_PASSWORD" $MYSQL_DATABASE &lt; sql/tmp/dataOnly.sql
+   - mysqldump --host=$MYSQL_HOST --port=$MYSQL_PORT --user=$MYSQL_USERNAME --password="$MYSQL_PASSWORD" $MYSQL_DATABASE &gt; sql/tmp/dumpAfter.sql
+  artifacts:
+    paths: 
+     - sql/tmp/
+  cache:
+    key: sql
+    paths:
+      - sql/tmp/
+    policy: push
+  only:
+    - dev
+
+backup-sql:
+  stage: backup
+  before_script:
+    - apt-get -qq update &amp;&amp; apt-get install -qq -y mysql-client
+  script:
+  - mysql --host=$MYSQL_HOST --port=$MYSQL_PORT --user=$MYSQL_USERNAME --password="$MYSQL_PASSWORD" $MYSQL_DATABASE &lt; sql/tmp/dumpBefore.sql
+  cache:
+    key: sql
+    paths:
+      - sql/tmp/
+    policy: pull
+  only:
+    - dev
+  when: on_failure</code></pre>
+                </section>
+
+            </div>
+        </main>
+
+        <footer>
+            <div class="container-fluid">
+                <p class="text-muted">
+                    website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yastatic.net/highlightjs/8.2/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>
