@@ -33,17 +33,17 @@
 
                         <ul class="nav nav-pills nav-stacked">
                                                             <li class="">
-                                    <a href="https://bileljegham.github.io/Gitlab-CI/docs/c.html">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/c.html">
                                         C
                                     </a>
                                 </li>
                                                             <li class="">
-                                    <a href="https://bileljegham.github.io/Gitlab-CI/docs/codeigniter.html">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/codeigniter.html">
                                         CodeIgniter
                                     </a>
                                 </li>
                                                             <li class="">
-                                    <a href="https://bileljegham.github.io/Gitlab-CI/docs/python.html">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/python.html">
                                         Python
                                     </a>
                                 </li>
@@ -53,58 +53,72 @@
 
                 
                 <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
-                    <h1 id="gitlab-ci-pour-c">Gitlab-CI pour C</h1>
+                    <h1 id="gitlab-ci-pour-python">Gitlab-CI pour Python</h1>
 <blockquote>
-<p>MakeFile, gcc</p>
+<p>python, pep8, enregistrements d'artifacts</p>
 </blockquote>
-<p>Utilisation de Makefile pour compiler et lancer un projet en C.<br />
-3 phases(stages) sont lancés par la CI :</p>
+<p>Cette CI a été utilisé dans le cadre du GoogleHashCode 2017.<br />
+Elle permettait de tester la syntaxe (Pep8) dans un premier temps.<br />
+De générer les fichiers de sortie issue de nos algorithmes dans un second temps.<br />
+Ces fichiers peuvent ensuite être téléchargés depuis l'onglet CI de Gitlab.</p>
+<p>3 phases(stages) sont lancées par le CI ;</p>
 <ol>
-<li>build</li>
 <li>test</li>
-<li>run</li>
+<li>build</li>
 </ol>
 <h2 id="les-fichiers">Les fichiers</h2>
 <!-- TOC depthFrom:3 orderedList:true -->
 <ol>
-<li><a href="#makefile">Makefile</a></li>
 <li><a href="#gitlab-ciyml">.gitlab-ci.yml</a></li>
 </ol>
 <!-- /TOC -->
-<h3 id="makefile">Makefile</h3>
-<pre><code class="language-makefile">run: compile
-    ./run
-compile: 
-    gcc **.c -ldl -o run
-test:
-    cppcheck .
-install:
-    apt-get -qq update &amp;&amp; apt-get -qq install -y cppcheck
-</code></pre>
 <h3 id="gitlab-ciyml">.gitlab-ci.yml</h3>
-<pre><code class="language-yml">image: gcc
+<pre><code class="language-yml">before_script:
+  - apt-get -qq update &amp;&amp; apt-get -qq install -y python3
+  - apt-get -qq install -y python-pip
+  - pip install flake8 pep8-naming
+  - apt-get -qq update
 
 stages:
-  - build
   - test
-  - run
+  - build
 
-compile:
+pep-8:
+  stage: test
+  script:
+  - flake8 src/python/**.py
+
+charleston_road:
   stage: build
   script:
-    - make compile
+    - python3 src/python/main.py  src/res/in/charleston_road
+  artifacts:
+    paths:
+    - src/res/out/charleston_road.out
 
-run:
-  stage: run
+rue_de_londres:
+  stage: build
   script:
-   - make run
+    - python3 src/python/main.py  src/res/in/rue_de_londres
+  artifacts:
+    paths:
+    - src/res/out/rue_de_londres.out
 
-test: 
-  stage: test
-  before_script:
-    - make install
+opera:
+  stage: build
   script:
-    - make test
+    - python3 src/python/main.py  src/res/in/opera
+  artifacts:
+    paths:
+    - src/res/out/opera.out
+
+lets_go_higher:
+  stage: build
+  script:
+    - python3 src/python/main.py  src/res/in/lets_go_higher
+  artifacts:
+    paths:
+    - src/res/out/lets_go_higher.out
 </code></pre>
                 </section>
 
