@@ -36,7 +36,7 @@ deploy-dev:
   stage: deploy
   script:
   - gem install dpl
-  - dpl --provider=heroku --app=idesys-egc-dev --api-key=$HEROKU_STAGING_API_KEY
+  - dpl --provider=heroku --app=name --api-key=$HEROKU_STAGING_API_KEY
   only:
   - dev
 
@@ -44,7 +44,7 @@ deloy-master:
   stage: deploy
   script:
   - gem install dpl
-  - dpl --provider=heroku --app=idesys-egc --api-key=$HEROKU_STAGING_API_KEY
+  - dpl --provider=heroku --app=name --api-key=$HEROKU_STAGING_API_KEY
   only:
   - master
 
