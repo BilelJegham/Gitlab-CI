@@ -1,8 +1,7 @@
 # Gitlab-CI
 
 > Bilel Jegham 
-> bilel.jegham.com
+> http://github.com/BilelJegham
 
 
-# Introduction
-Ce repo propose différents fichier gitlab-ci que j'ai utilisé dans mes différents projets.
+see `/doc`

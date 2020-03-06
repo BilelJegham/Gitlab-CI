@@ -3,6 +3,7 @@ template:
     directory: website
     # Or if you are using a remote template, you can set the Git URL
     url: https://github.com/CouscousPHP/Template-Light.git
+    index: ../README.md
 
 
 
@@ -14,7 +15,7 @@ exclude:
     - website
     - some/dir
     # This special entry will ask Couscous to read the exluded directories from your ".gitignore"  file
-    - %gitignore%
+    - \%gitignore%
 
 
 
@@ -24,7 +25,10 @@ branch: gh-pages
 
 # Any variable you put in this file is also available in the Twig layouts:
 title: GitLab Doc
-subtitle: VV
+subtitle: Un doc sur GItlabCI
+
+include:
+    - docs
 
 menu:
     items:
@@ -34,12 +38,26 @@ menu:
         C :
             text: C
             relativeUrl: c.html
-        CodeIgniter:
-            text: CodeIgniter
-            relativeUrl: codeigniter.html
         python:
             text: Python
             relativeUrl: python.html
+        CodeIgniter:
+            text: CodeIgniter
+            relativeUrl: codeigniter.html
+        Electron :
+            text: Electron
+            relativeUrl: electron.html
+
+        PlSQL :
+            text: PL/SQL + Selenium
+            relativeUrl: plsql.html
+        Symfony :
+            text: Symfony
+            relativeUrl: symfony.html
+
+        js :
+            text: JavaScript
+            relativeUrl: js.html
 
 # Base URL of the published website (no "/" at the end!)
 # You are advised to set and use this variable to write your links in the HTML layouts

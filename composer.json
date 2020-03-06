@@ -6,5 +6,7 @@
             "email": "bilel@jegham.com"
         }
     ],
-    "require": {}
+    "require": {
+        "couscous/couscous": "^1.7"
+    }
 }

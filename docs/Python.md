@@ -13,11 +13,7 @@ De générer les fichiers de sortie issue de nos algorithmes dans un second temp
 
 ## Les fichiers
 
-<!-- TOC depthFrom:3 orderedList:true -->
-
-1. [.gitlab-ci.yml](#gitlab-ciyml)
-
-<!-- /TOC -->
+<!-- TOC depthFrom:3 orderedList:true -->autoauto1. [.gitlab-ci.yml](#gitlab-ciyml)autoauto<!-- /TOC -->
 
 
 ### .gitlab-ci.yml

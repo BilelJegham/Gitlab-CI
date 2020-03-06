@@ -1,5 +1,4 @@
 
-
 # Gitlab-CI pour C 
 > MakeFile, gcc
 
@@ -12,12 +11,7 @@ Utilisation de Makefile pour compiler et lancer un projet en C.
 
 ## Les fichiers
 
-<!-- TOC depthFrom:3 orderedList:true -->
 
-1. [Makefile](#makefile)
-2. [.gitlab-ci.yml](#gitlab-ciyml)
-
-<!-- /TOC -->
 
 ### Makefile
 ```makefile

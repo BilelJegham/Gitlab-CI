@@ -2,18 +2,22 @@
 
 # Gitlab-CI pour JavaScript
  
-> VueJS
+> WebPack, VueJS
 
 
 
-<!-- TOC depthFrom:3 orderedList:true -->
+<!-- TOC depthFrom:2 orderedList:true -->
 
-1. [.gitlab-ci.yml](#gitlab-ciyml)
-2. [mysql](#mysql)
+1. [WebPack](#webpack)
+    1. [gitlab-ci.yml](#gitlab-ciyml)
+2. [VueJS](#vuejs)
+    1. [gitlab-ci.yml](#gitlab-ciyml-1)
+    2. [Github Action](#github-action)
 
 <!-- /TOC -->
+
 ## WebPack
-### .gitlab-ci.yml
+### gitlab-ci.yml
 ```yml
 image: node:latest
 
@@ -32,7 +36,7 @@ pages:
 ```
 
 ## VueJS
-### .gitlab-ci.yml
+### gitlab-ci.yml
 ```yml
 image: node:latest
 
@@ -50,8 +54,11 @@ pages:
 
 ```
 
-### GithubAction
-#### .github/workflows/main.yml
+### Github Action
+> https://github.com/idesys-dev/jeh-maker
+
+
+github/workflows/main.yml
 ```yml
 name: CI
 
@@ -178,8 +185,7 @@ jobs:
 
 
 ```
-
-#### .github/workflows/nightwatch.conf.js
+github/workflows/nightwatch.conf.js
 ```js
 
 module.exports = {
