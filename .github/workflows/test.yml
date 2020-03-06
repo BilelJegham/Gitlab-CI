@@ -1,0 +1,14 @@
+name: Coucous Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: BilelJegham/actions-couscous@v0
