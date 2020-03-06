@@ -24,7 +24,7 @@ exclude:
 branch: gh-pages
 
 # Any variable you put in this file is also available in the Twig layouts:
-title: GitLab Doc
+title: GitLabCI Doc
 subTitle: Une doc sur GitlabCI et d'autres choses en lien avec l'intégration continue
 
 include:
