@@ -5,4 +5,4 @@
 
 
 # Introduction
-Ce repo propose différents fichier gitlab-ci que j'ai utilisé dans mes différents projets.
+Ce repo propose différents fichiers gitlab-ci que j'ai utilisé dans mes différents projets.
