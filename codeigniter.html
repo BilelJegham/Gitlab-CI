@@ -43,13 +43,33 @@
                                     </a>
                                 </li>
                                                             <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/python.html">
+                                        Python
+                                    </a>
+                                </li>
+                                                            <li class="">
                                     <a href="https://bileljegham.github.io/Gitlab-CI/codeigniter.html">
                                         CodeIgniter
                                     </a>
                                 </li>
                                                             <li class="">
-                                    <a href="https://bileljegham.github.io/Gitlab-CI/python.html">
-                                        Python
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/electron.html">
+                                        Electron
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/plsql.html">
+                                        PL/SQL + Selenium
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/symfony.html">
+                                        Symfony
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/js.html">
+                                        JavaScript
                                     </a>
                                 </li>
                                                     </ul>
@@ -91,7 +111,7 @@ deploy-dev:
   stage: deploy
   script:
   - gem install dpl
-  - dpl --provider=heroku --app=idesys-egc-dev --api-key=$HEROKU_STAGING_API_KEY
+  - dpl --provider=heroku --app=name --api-key=$HEROKU_STAGING_API_KEY
   only:
   - dev
 
@@ -99,7 +119,7 @@ deloy-master:
   stage: deploy
   script:
   - gem install dpl
-  - dpl --provider=heroku --app=idesys-egc --api-key=$HEROKU_STAGING_API_KEY
+  - dpl --provider=heroku --app=name --api-key=$HEROKU_STAGING_API_KEY
   only:
   - master
 </code></pre>

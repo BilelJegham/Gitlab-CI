@@ -78,13 +78,150 @@
 
                 
                 <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
-                    <h1 id="gitlab-ci">Gitlab-CI</h1>
+                    <h1 id="gitlab-ci-pour-symfony">Gitlab-CI pour Symfony</h1>
 <blockquote>
-<p>Bilel Jegham
-<a href="http://github.com/BilelJegham">http://github.com/BilelJegham</a></p>
+<p>Symfony, PHP</p>
 </blockquote>
-<h1 id="introduction">Introduction</h1>
-<p>Ce repo propose différents fichier gitlab-ci que j'ai utilisé dans mes différents projets.</p>
+<p>En lien avec <a href="https://github.com/BilelJegham/symfony-bootstrapped">https://github.com/BilelJegham/symfony-bootstrapped</a></p>
+<pre><code class="language-yml">
+stages:
+  - docker
+  - tests
+  - quality-assurance
+  - deploy
+
+image: mykiwi/docker
+services:
+- docker:dind
+variables:
+  DOCKER_DRIVER: overlay2
+  COMPOSE_FILE: "docker-compose.yml:docker-compose.gitlab-ci.yml"
+
+.template-load-gitlab-image: &amp;internal-image
+  before_script:
+    - cp -f .env.dist .env
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - docker-compose pull php node || true
+
+.template-docker: &amp;external-image
+  before_script:
+    - cp -f .env.dist .env
+
+build-docker-images:
+  &lt;&lt;: *internal-image
+  stage: docker
+  script:
+    - docker-compose build --pull
+    - docker-compose push
+  only:
+    - master
+
+tests:
+  &lt;&lt;: *internal-image
+  stage: tests
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+  script:
+    - make start
+    - make test
+  artifacts:
+    reports:
+      junit: var/artefacts/report.xml
+    paths:
+      - var/artefacts/coverage/
+    expire_in: 1 week
+
+check-security:
+  &lt;&lt;: *internal-image
+  stage: quality-assurance
+  script:
+    - make start
+    - make security
+
+check-yaml-files:
+  &lt;&lt;: *internal-image
+  stage: quality-assurance
+  script:
+    - make start
+    - make ly
+
+check-twig-files:
+  &lt;&lt;: *internal-image
+  stage: quality-assurance
+  script:
+    - make start
+    - make lt
+
+phpmd:
+  &lt;&lt;: *external-image
+  stage: quality-assurance
+  script:
+    - make phpmd || true # Bug with php 7.1
+
+php_codesnifer:
+  &lt;&lt;: *external-image
+  stage: quality-assurance
+  script:
+    - make php_codesnifer
+
+php-cs-fixer:
+  &lt;&lt;: *external-image
+  stage: quality-assurance
+  script:
+    - make php-cs-fixer
+
+eslint:
+  &lt;&lt;: *internal-image
+  stage: quality-assurance
+  script:
+    - make start
+    - make eslint
+
+phpcpd:
+  &lt;&lt;: *external-image
+  stage: quality-assurance
+  script:
+    - make phpcpd
+
+phploc:
+  &lt;&lt;: *external-image
+  stage: quality-assurance
+  script:
+    - make phploc
+
+pdepend:
+  &lt;&lt;: *external-image
+  stage: quality-assurance
+  script:
+    - make pdepend
+  artifacts:
+    paths:
+      - var/artefacts/pdepend_summary.xml
+      - var/artefacts/pdepend_jdepend.svg
+      - var/artefacts/pdepend_pyramid.svg
+    expire_in: 1 week
+
+phpmetrics:
+  &lt;&lt;: *external-image
+  stage: quality-assurance
+  script:
+    - make phpmetrics
+  artifacts:
+    paths:
+      - var/artefacts/phpmetrics
+    expire_in: 1 week
+
+ci-report:
+  stage: deploy
+  only:
+    - master
+  script:
+    - rm -rf public/*
+    - cp .gitlab-pages.html var/artefacts/index.html
+    - sed -i "s/PLACEHOLDER_GIT_COMMIT/${CI_COMMIT_SHA}/g" var/artefacts/index.html
+    - cp -R var/artefacts/* public/
+  artifacts:
+    paths:
+      - public</code></pre>
                 </section>
 
             </div>

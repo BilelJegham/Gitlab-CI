@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>GitLab Doc</title>
+
+        <link rel="stylesheet" href="https://bileljegham.github.io/Gitlab-CI/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://bileljegham.github.io/Gitlab-CI/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://bileljegham.github.io/Gitlab-CI/css/highlight.dark.css">
+        <link rel="stylesheet" href="https://bileljegham.github.io/Gitlab-CI/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="https://bileljegham.github.io/Gitlab-CI/">
+                GitLab Doc
+                <small class="hidden-xs hidden-sm">
+                    This is the default subtitle!
+                </small>
+            </a>
+
+            
+        </header>
+
+        <main class="container-fluid">
+            <div class="row">
+
+                
+                    <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+
+                        <ul class="nav nav-pills nav-stacked">
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/index.html">
+                                        Introduction
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/c.html">
+                                        C
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/python.html">
+                                        Python
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/codeigniter.html">
+                                        CodeIgniter
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/electron.html">
+                                        Electron
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/plsql.html">
+                                        PL/SQL + Selenium
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/symfony.html">
+                                        Symfony
+                                    </a>
+                                </li>
+                                                            <li class="">
+                                    <a href="https://bileljegham.github.io/Gitlab-CI/js.html">
+                                        JavaScript
+                                    </a>
+                                </li>
+                                                    </ul>
+
+                    </nav>
+
+                
+                <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
+                    <h1 id="gitlab-ci-pour-javascript">Gitlab-CI pour JavaScript</h1>
+<blockquote>
+<p>WebPack, VueJS</p>
+</blockquote>
+<!-- TOC depthFrom:2 orderedList:true -->
+<ol>
+<li><a href="#webpack">WebPack</a>
+<ol>
+<li><a href="#gitlab-ciyml">gitlab-ci.yml</a></li>
+</ol></li>
+<li><a href="#vuejs">VueJS</a>
+<ol>
+<li><a href="#gitlab-ciyml-1">gitlab-ci.yml</a></li>
+<li><a href="#github-action">Github Action</a></li>
+</ol></li>
+</ol>
+<!-- /TOC -->
+<h2 id="webpack">WebPack</h2>
+<h3 id="gitlab-ciyml">gitlab-ci.yml</h3>
+<pre><code class="language-yml">image: node:latest
+
+pages:
+  stage: deploy
+  before_script:
+    - npm install
+  script:
+    - npm run build
+    - mkdir public
+    - cp -r dist/ public/
+  artifacts:
+    paths:
+      - public
+</code></pre>
+<h2 id="vuejs">VueJS</h2>
+<h3 id="gitlab-ciyml-1">gitlab-ci.yml</h3>
+<pre><code class="language-yml">image: node:latest
+
+pages:
+  stage: deploy
+  before_script:
+    - npm install
+  script:
+    - npm run build
+    - mkdir public
+    - cp -r dist/ public/
+  artifacts:
+    paths:
+      - public
+</code></pre>
+<h3 id="github-action">Github Action</h3>
+<blockquote>
+<p><a href="https://github.com/idesys-dev/jeh-maker">https://github.com/idesys-dev/jeh-maker</a></p>
+</blockquote>
+<p>github/workflows/main.yml</p>
+<pre><code class="language-yml">name: CI
+
+on: [push]
+
+jobs:
+  linter:
+    name: Linter
+    runs-on: 'ubuntu-latest'
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - run: npm ci
+    - name: Linter
+      run: npm run lint
+
+  test-unit:
+    name: Test Unit
+    runs-on: 'ubuntu-latest'
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - run: npm ci
+    - name: Unit Test
+      run: npm run test:unit
+    - uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        # Artifact name
+        name: coverage
+        # Directory containing files to upload
+        path: coverage
+
+  test-e2e:
+    name: Test e2e
+    runs-on: 'ubuntu-latest'
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - run: npm ci
+    - name: Test e2e
+      run: npm run test:e2e:firefox
+
+  build:
+    name: Build
+    runs-on: 'ubuntu-latest'
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - run: npm ci
+    - name: Build
+      run: npm run build
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        # Artifact name
+        name: build
+        # Directory containing files to upload
+        path: dist
+
+  storybook:
+    name: Storybook
+    runs-on: 'ubuntu-latest'
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - run: npm ci
+    - name: Build
+      run: npm run build-storybook
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        # Artifact name
+        name: storybook
+        # Directory containing files to upload
+        path: storybook-static
+
+  chromatic:
+    name: Chromatic
+    runs-on: 'ubuntu-latest'
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - run: npm ci
+    - uses: chromaui/action@v1
+      with:
+        appCode: ${{ secrets.CHROMATIC_APP_CODE }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+</code></pre>
+<p>github/workflows/nightwatch.conf.js</p>
+<pre><code class="language-js">
+module.exports = {
+    src_folders: ['tests/e2e/specs'],
+  output_folder: 'tests/e2e/reports',
+  page_objects_path: 'tests/e2e/page-objects',
+  custom_assertions_path: 'tests/e2e/custom-assertions',
+  custom_commands_path: 'tests/e2e/custom-commands',
+    test_settings: {
+        default: {
+            launch_url: '${VUE_DEV_SERVER_URL}',
+
+        },
+        selenium: {
+          selenium: {
+            start_process: true,
+            port: 4444,
+            server_path: require('selenium-server').path,
+            cli_args: {
+              'webdriver.gecko.driver': require('geckodriver').path,
+              'webdriver.chrome.driver': require('chromedriver').path
+            }
+          },
+          webdriver: {
+            start_process: false
+          }
+          },
+          'selenium.chrome': {
+            extends: 'selenium',
+            desiredCapabilities: {
+              browserName: 'chrome',
+              chromeOptions : {
+                w3c: false
+              }
+            }
+          },
+
+          'selenium.firefox': {
+            extends: 'selenium',
+            desiredCapabilities: {
+              browserName: 'firefox'
+            }
+          }
+    }
+}</code></pre>
+                </section>
+
+            </div>
+        </main>
+
+        <footer>
+            <div class="container-fluid">
+                <p class="text-muted">
+                    website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yastatic.net/highlightjs/8.2/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>
