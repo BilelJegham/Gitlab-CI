@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - uses: BilelJegham/actions-couscous@v0
+      - uses: CouscousPHP/GitHub-Action@v1
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
